@@ -1,0 +1,1 @@
+I have learnt how to build a jQuery plugin, and I want to put it in practice building a jQuery color picker plugin.
