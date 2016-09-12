@@ -1,7 +1,13 @@
 (function($) {
     $.fn.colorPicker = function(options) {
         this.each(function() {
-            var settings = $.extend({colorPicker: $(this),defaultColor : '#CCC',colors: [{name:'White',color:'#FFF'},{name:'Silver',color:'#CCC'},{name:'Gray',color:'#888'}],hoverColor: '#3AD'}, options),
+            var settings = $.extend({
+                colorPicker: $(this),
+                defaultColor : '#CCC',
+                colors: [{name:'White',color:'#FFF'},{name:'Silver',color:'#CCC'},{name:'Gray',color:'#888'}],
+                hoverColor: '#3AD',
+                colorOptionClass: 'color'
+            }, options),
                 validateHexColor = function(color) {
                     var validHexColor =  new RegExp("^#(?:[0-9a-fA-F]{3}){1,2}$");
                     if (validHexColor.test(color) ) {
@@ -36,24 +42,20 @@
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
-            settings.colorPicker.on('blur', function(e) {
-                e.stopPropagation();
-                $('.color-picker-input').trigger('hideColorsList');
-            });
-            $(document).on('click','.color', function() {
+            $(document).on('click','.'+settings.colorOptionClass, function() {
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
             });
-            $(document).on('mouseover.hover','.color', function() {
+            $(document).on('mouseover.hover','.'+settings.colorOptionClass, function() {
+                $(this).addClass('cp-mouseover');
                 changeBgColor($(this),settings.hoverColor);
             });
-            $(document).on('mouseout.hover','.color', function() {
+            $(document).on('mouseout.hover','.'+settings.colorOptionClass, function() {
                 changeBgColor($(this),$(this).data('color'));
             });
             settings.colorPicker.on('focus', function() {
                 $('.color-picker-input').trigger('showColorsList');
             });
-
 
            if (validateHexColor($(this).val()) ) {
                changeBgColor($(this),$(this).val());
@@ -61,6 +63,8 @@
                $(this).val(settings.defaultColor);
                changeBgColor($(this),settings.defaultColor);
            }
+
+            $(this).addClass('cp-mouseover');
         });
     };
 })(jQuery);
