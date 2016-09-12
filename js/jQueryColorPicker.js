@@ -18,11 +18,13 @@
                         colorsList.append(color);
                     }
                     colorsList.insertAfter(settings.colorPicker);
-                };
+                },
                 hideColorsList = function() {
                     settings.colorPicker.next().remove();
+                },
+                changeBgColor = function(el,color) {
+                    el.css('background',color);
                 };
-
             settings.colorPicker.on('showColorsList',function() {
                 showColorsList(settings.colors);
             });
@@ -30,7 +32,7 @@
                 hideColorsList();
             });
             settings.colorPicker.on('selectedColor', function(e,color) {
-                settings.colorPicker.css('background',color);
+                changeBgColor(settings.colorPicker,color);
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
@@ -39,18 +41,17 @@
                 settings.colorPicker.trigger('selectedColor',selectedColor);
             });
             $(document).on('mouseover.hover','.color', function() {
-                $(this).css('background',settings.hoverColor);
+                changeBgColor($(this),settings.hoverColor);
             });
             $(document).on('mouseout.hover','.color', function() {
-                $(this).css('background',$(this).data('color'));
+                changeBgColor($(this),$(this).data('color'));
             });
 
-
            if (validateHexColor($(this).val()) ) {
-               $(this).css('background-color',$(this).val());
+               changeBgColor($(this),$(this).val());
            } else {
                $(this).val(settings.defaultColor);
-               $(this).css('background-color',settings.defaultColor);
+               changeBgColor($(this),settings.defaultColor);
            }
         });
     };
