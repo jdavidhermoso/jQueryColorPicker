@@ -36,6 +36,10 @@
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
+            settings.colorPicker.on('blur', function(e) {
+                e.stopPropagation();
+                $('.color-picker-input').trigger('hideColorsList');
+            });
             $(document).on('click','.color', function() {
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
@@ -46,6 +50,10 @@
             $(document).on('mouseout.hover','.color', function() {
                 changeBgColor($(this),$(this).data('color'));
             });
+            settings.colorPicker.on('focus', function() {
+                $('.color-picker-input').trigger('showColorsList');
+            });
+
 
            if (validateHexColor($(this).val()) ) {
                changeBgColor($(this),$(this).val());
