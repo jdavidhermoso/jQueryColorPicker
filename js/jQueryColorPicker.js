@@ -42,6 +42,7 @@
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
+            //TODO: Add the event handler only for $(this) -> colorOptionClass. Important cause causing issues
             $(document).on('click','.'+settings.colorOptionClass, function() {
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
@@ -54,7 +55,7 @@
                 changeBgColor($(this),$(this).data('color'));
             });
             settings.colorPicker.on('focus', function() {
-                $('.color-picker-input').trigger('showColorsList');
+                settings.colorPicker.trigger('showColorsList');
             });
 
            if (validateHexColor($(this).val()) ) {
