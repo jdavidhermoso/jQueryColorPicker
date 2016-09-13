@@ -26,6 +26,7 @@
                     colorsList.insertAfter(settings.colorPicker);
                 },
                 hideColorsList = function() {
+                    console.log(settings.colorPicker.next());
                     settings.colorPicker.next().remove();
                 },
                 changeBgColor = function(el,color) {
@@ -43,7 +44,7 @@
                 settings.colorPicker.trigger('hideColorsList');
             });
             //TODO: Add the event handler only for $(this) -> colorOptionClass. Important cause causing issues
-            $(document).on('click','.'+settings.colorOptionClass, function() {
+            $(this).parent().on('click','.'+settings.colorOptionClass, function() {
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
             });
