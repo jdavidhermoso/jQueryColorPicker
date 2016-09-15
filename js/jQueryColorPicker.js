@@ -16,8 +16,14 @@
                         return false;
                     }
                 },
+                encapsulateColorPicker = function() {
+                    var colorPickerWrapper = $('<div class="cp-wrapper"></div>'),
+                        colorPickerParent = settings.colorPicker.parent();
+                    settings.colorPicker.appendTo(colorPickerWrapper);
+                    colorPickerParent.append(colorPickerWrapper);
+                },
                 showColorsList = function(colors,selectedColor) {
-                    var colorsList = $('<div class="color-picker-container" style="width:'+settings.colorPicker.width()+' ;"></div>'),
+                    var colorsList = $('<div class="color-picker-list-container" style="width:'+settings.colorPicker.width()+' ;"></div>'),
                         color;
                     for (var i= 0,z = colors.length;i<z;i++) {
                         color = $('<div class="color" data-color="'+colors[i].color+'" style="background: '+colors[i].color+'">'+colors[i].name+'</div>');
@@ -43,10 +49,13 @@
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
-            //TODO: Add the event handler only for $(this) -> colorOptionClass. Important cause causing issues
             $(this).parent().on('click','.'+settings.colorOptionClass, function() {
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
+            });
+            $(document).on('click', function() {
+
+
             });
             $(document).on('mouseover.hover','.'+settings.colorOptionClass, function() {
                 $(this).addClass('cp-mouseover');
@@ -58,6 +67,8 @@
             settings.colorPicker.on('focus', function() {
                 settings.colorPicker.trigger('showColorsList');
             });
+
+            encapsulateColorPicker();
 
            if (validateHexColor($(this).val()) ) {
                changeBgColor($(this),$(this).val());
