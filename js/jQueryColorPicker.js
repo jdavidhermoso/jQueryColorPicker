@@ -3,11 +3,12 @@
         this.each(function() {
             var settings = $.extend({
                 colorPicker: $(this),
-                defaultColor : '#CCC',
+                defaultColor : {name:'Grey',color:'#CCC'},
                 colors: [{name:'White',color:'#FFF'},{name:'Silver',color:'#CCC'},{name:'Gray',color:'#888'}],
                 hoverColor: '#3AD',
                 colorOptionClass: 'color'
             }, options),
+
                 validateHexColor = function(color) {
                     var validHexColor =  new RegExp("^#(?:[0-9a-fA-F]{3}){1,2}$");
                     if (validHexColor.test(color) ) {
@@ -23,7 +24,7 @@
                     colorPickerParent.append(colorPickerWrapper);
                 },
                 showColorsList = function(colors,selectedColor) {
-                    var colorsList = $('<div class="color-picker-list-container" style="width:'+settings.colorPicker.width()+' ;"></div>'),
+                    var colorsList = $('<div class="color-picker-list-container" style="width:'+settings.colorPicker.width()+' ;"><div class="color" data-color="'+settings.defaultColor.color+'">'+settings.defaultColor.name+'</div></div>'),
                         color;
                     for (var i= 0,z = colors.length;i<z;i++) {
                         color = $('<div class="color" data-color="'+colors[i].color+'" style="background: '+colors[i].color+'">'+colors[i].name+'</div>');
@@ -34,6 +35,15 @@
                 hideColorsList = function() {
                     console.log(settings.colorPicker.next());
                     settings.colorPicker.next().remove();
+                },
+                init = function() {
+                    console.log(options);
+                    if (validateHexColor(settings.colorPicker.val()) ) {
+                        changeBgColor(settings.colorPicker,settings.colorPicker.val());
+                    } else {
+                        settings.colorPicker.val(settings.defaultColor.color);
+                        changeBgColor(settings.colorPicker,settings.defaultColor.color);
+                    }
                 },
                 changeBgColor = function(el,color) {
                     el.css('background',color);
@@ -53,9 +63,8 @@
                 var selectedColor = $(this).data('color');
                 settings.colorPicker.trigger('selectedColor',selectedColor);
             });
-            $(document).on('click', function() {
-
-
+            $(window).on('click', function() {
+                settings.colorPicker.trigger('hideColorsList');
             });
             $(document).on('mouseover.hover','.'+settings.colorOptionClass, function() {
                 $(this).addClass('cp-mouseover');
@@ -64,18 +73,14 @@
             $(document).on('mouseout.hover','.'+settings.colorOptionClass, function() {
                 changeBgColor($(this),$(this).data('color'));
             });
-            settings.colorPicker.on('focus', function() {
+            settings.colorPicker.on('focus click', function() {
                 settings.colorPicker.trigger('showColorsList');
             });
 
             encapsulateColorPicker();
 
-           if (validateHexColor($(this).val()) ) {
-               changeBgColor($(this),$(this).val());
-           } else {
-               $(this).val(settings.defaultColor);
-               changeBgColor($(this),settings.defaultColor);
-           }
+            init();
+
 
             $(this).addClass('cp-mouseover');
         });
