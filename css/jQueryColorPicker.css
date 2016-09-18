@@ -1,6 +1,24 @@
-.cp-mouseover {
+.color-picker-list-container {
+    cursor: pointer;
+}
+
+.cp-input.openList {
+    border-radius: 4px 4px 0px 0px;
+}
+.cp-input:hover {
     cursor: pointer;
 }
 .color-picker-list-container {
     position: absolute;
+}
+.color {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+.color:first-child {
+    border-top: 1px solid #ccc;
+}
+.color:last-child {
+    border-radius: 0 0 4px 4px;
+    border-color: #66afe9;
 }
