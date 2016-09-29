@@ -3,10 +3,11 @@
         this.each(function() {
             var settings = $.extend({
                 colorPicker: $(this),
-                defaultColor : {name:'White',color:'#FFF'},
-                colors: [{name:'White',color:'#FFF'},{name:'Silver',color:'#CCC'},{name:'Gray',color:'#888'}],
+                defaultColor : {color:'#FFF'},
+                colors: [{color:'#FFF'},{color:'#CCC'},{color:'#888'}],
                 hoverColor: '#3AD',
                 colorOptionClass: 'color'
+
             }, options),
                 validateHexColor = function(color) {
                     var validHexColor =  new RegExp("^#(?:[0-9a-fA-F]{3}){1,2}$");
@@ -22,22 +23,22 @@
                     settings.colorPicker.appendTo(colorPickerWrapper);
                     colorPickerParent.append(colorPickerWrapper);
                 },
-                showColorsList = function(colors,selectedColor) {
-                    var colorsList = $('<div class="color-picker-list-container"><div class="color" data-color="'+settings.defaultColor.color+'" style="background: '+settings.defaultColor.color+'">'+settings.defaultColor.name+'</div></div>'),
+                showColorsList = function(colors) {
+                    var colorsList = $('<div class="cp-colors-list-container"><div class="cp-colors-list-color" data-checked="1" data-color="'+settings.defaultColor.color+'" style="background: '+settings.defaultColor.color+'">'+settings.defaultColor.color+'</div></div>'),
                         color;
                     for (var i= 0,z = colors.length;i<z;i++) {
-                        color = $('<div class="color" data-color="'+colors[i].color+'" style="background: '+colors[i].color+'">'+colors[i].name+'</div>');
+                        color = $('<div class="cp-colors-list-color" data-checked="0" data-color="'+colors[i].color+'" style="background: '+colors[i].color+'">'+colors[i].color+'</div>');
                         colorsList.append(color);
                     }
-                    settings.colorPicker.addClass('openList');
                     colorsList.insertAfter(settings.colorPicker);
-                    $('.color-picker-list-container').css('width',(settings.colorPicker[0].clientWidth+2)+"px");
+                    $('.cp-colors-list-container').css('width',(settings.colorPicker[0].clientWidth+2)+"px");
+                    settings.colorPicker.addClass('openList');
                 },
                 hideColorsList = function() {
-
                     settings.colorPicker.next().remove();
                     settings.colorPicker.removeClass('openList');
                 },
+
                 init = function() {
                     settings.colorPicker.attr('readonly','readonly');
                     settings.colorPicker.addClass('cp-input');
@@ -57,30 +58,38 @@
             settings.colorPicker.on('hideColorsList',function() {
                 hideColorsList();
             });
+            $(this).parent().on('click','.cp-colors-list-color', function() {
+                var selectedColor = $(this).data('color');
+                settings.colorPicker.trigger('selectedColor',selectedColor);
+            });
             settings.colorPicker.on('selectedColor', function(e,color) {
                 changeBgColor(settings.colorPicker,color);
                 settings.colorPicker.val(color);
                 settings.colorPicker.trigger('hideColorsList');
             });
-            $(this).parent().on('click','.'+settings.colorOptionClass, function() {
-                var selectedColor = $(this).data('color');
-                settings.colorPicker.trigger('selectedColor',selectedColor);
+            $(document).on('keyup', function(e) {
+                if (e.keyCode == 27) {
+                    settings.colorPicker.trigger('hideColorsList');
+                    settings.colorPicker.trigger('blur');
+                }
             });
-            
             $(document).on('click', function(e) {
-                settings.colorPicker.trigger('hideColorsList');
+
+
             });
-            $(document).on('mouseover.hover','.'+settings.colorOptionClass, function() {
+            $(document).on('mouseover.hover','.cp-colors-list-color', function() {
                 changeBgColor($(this),settings.hoverColor);
             });
-            $(document).on('mouseout.hover','.'+settings.colorOptionClass, function() {
+            $(document).on('mouseout.hover','.cp-colors-list-color', function() {
                 changeBgColor($(this),$(this).data('color'));
             });
-            settings.colorPicker.on('focus click', function() {
-                settings.colorPicker.trigger('showColorsList');
-            });
-            settings.colorPicker.on('blur', function() {
-                settings.colorPicker.trigger('hideColorsList');
+            settings.colorPicker.on('click', function(e) {
+                e.stopPropagation();
+                    if (!$(this).parent().find('.cp-colors-list-container').length) {
+                        settings.colorPicker.trigger('showColorsList');
+                    } else {
+                        settings.colorPicker.trigger('hideColorsList');
+                    }
             });
             encapsulateColorPicker();
             init();
